@@ -69,27 +69,27 @@ fi
 case "$subcommand" in
   build)
     # Build slim version with minimal dependencies
-    docker build -t apache/tika:${version} --build-arg TIKA_VERSION=${version} --build-arg TIKA_JAR_NAME=${jar} - < minimal/Dockerfile --no-cache
+    # docker build -t apache/tika:${version} --build-arg TIKA_VERSION=${version} --build-arg TIKA_JAR_NAME=${jar} - < minimal/Dockerfile --no-cache
     # Build full version with OCR, Fonts and GDAL
     docker build -t apache/tika:${version}-full --build-arg TIKA_VERSION=${version} --build-arg TIKA_JAR_NAME=${jar} - < full/Dockerfile --no-cache
     ;;
 
   test)
     # Test the images
-    test_docker_image ${version}
+    # test_docker_image ${version}
     test_docker_image "${version}-full"
     ;;
 
   publish)
     # Push the build images
-    docker push apache/tika:${version}
+    # docker push apache/tika:${version}
     docker push apache/tika:${version}-full
     ;;
 
   latest)
     # Update the latest tags to point to supplied version
-    docker tag apache/tika:${version} apache/tika:latest
-    docker push apache/tika:latest
+    # docker tag apache/tika:${version} apache/tika:latest
+    # docker push apache/tika:latest
     docker tag apache/tika:${version}-full apache/tika:latest-full
     docker push apache/tika:latest-full
     ;;
