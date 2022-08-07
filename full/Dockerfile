@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations under
 # the License.
 FROM ubuntu:focal as base
+RUN add-apt-repository -y ppa:alex-p/tesseract-ocr-devel
 RUN apt-get update
 
 FROM base as dependencies
@@ -25,8 +26,8 @@ RUN echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula selec
     && DEBIAN_FRONTEND=noninteractive apt-get install -y xfonts-utils fonts-freefont-ttf fonts-liberation ttf-mscorefonts-installer wget cabextract
 
 FROM dependencies as fetch_tika
-ARG TIKA_VERSION
-ARG TIKA_JAR_NAME=tika-server
+ARG TIKA_VERSION=2.4.0
+ARG TIKA_JAR_NAME=tika-server-standard
 ARG CHECK_SIG=true
 
 ENV NEAREST_TIKA_SERVER_URL="https://www.apache.org/dyn/closer.cgi/tika/${TIKA_VERSION}/${TIKA_JAR_NAME}-${TIKA_VERSION}.jar?filename=tika/${TIKA_VERSION}/${TIKA_JAR_NAME}-${TIKA_VERSION}.jar&action=download" \
@@ -58,9 +59,9 @@ RUN if [ "$CHECK_SIG" = "true" ] ; then gpg --verify /${TIKA_JAR_NAME}-${TIKA_VE
 
 FROM dependencies as runtime
 RUN apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-ARG TIKA_VERSION
+ARG TIKA_VERSION=2.4.0
 ENV TIKA_VERSION=$TIKA_VERSION
-ARG TIKA_JAR_NAME
+ARG TIKA_JAR_NAME=tika-server-standard
 ENV TIKA_JAR_NAME=$TIKA_JAR_NAME
 COPY --from=fetch_tika /${TIKA_JAR_NAME}-${TIKA_VERSION}.jar /${TIKA_JAR_NAME}-${TIKA_VERSION}.jar
 USER $UID_GID
